@@ -67,18 +67,29 @@
 <body>
 
 <div id="container">
-	<h1>Welcome to CodeIgniter!</h1>
-
+	<h1>Testing Curl</h1>
 	<div id="body">
-		<p>The page you are looking at is being generated dynamically by CodeIgniter.</p>
+	<?php
+		$wArray = makeRequestArray();
+		var_dump($wArray);
 
-		<p>If you would like to edit this page you'll find it located at:</p>
-		<code>application/views/welcome_message.php</code>
 
-		<p>The corresponding controller for this page is found at:</p>
-		<code>application/controllers/welcome.php</code>
+		$wCurl = new Curl();
+		// BEGIN IN DEBUG ONLY !!!
+		$wCurl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+		// END IN DEBUG ONLY !!!
+		$wCurl->get('https://clicker.dev/api/v1/users/1', $wArray);
 
-		<p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="http://ellislab.com/codeigniter/user-guide//">User Guide</a>.</p>
+		if ($wCurl->error) {
+    		echo "Error :".$wCurl->error_code;
+		}
+		else {
+			echo $wCurl->response->id."<br>";
+			echo $wCurl->response->firstname."<br>";
+			echo $wCurl->response->lastname."<br>";
+			echo $wCurl->response->email."<br>";
+		}
+	?>
 	</div>
 
 	<p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds</p>
