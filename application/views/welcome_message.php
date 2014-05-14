@@ -67,30 +67,53 @@
 <body>
 
 <div id="container">
-	<h1>Testing Curl</h1>
 	<div id="body">
-	<?php
-		$wArray = makeRequestArray();
-		var_dump($wArray);
+		<div>
+			<h1> Testing curl </h1>
+			<?php
+			$wArray = makeRequestArray();
+			var_dump($wArray);
 
 
-		$wCurl = new Curl();
-		// BEGIN IN DEBUG ONLY !!!
-		$wCurl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
-		// END IN DEBUG ONLY !!!
-		$wCurl->get('https://clicker.dev/api/v1/users/1', $wArray);
+			$wCurl = new Curl();
+			// BEGIN IN DEBUG ONLY !!!
+			$wCurl->setOpt(CURLOPT_SSL_VERIFYPEER, false);
+			// END IN DEBUG ONLY !!!
 
-		if ($wCurl->error) {
-    		echo "Error :".$wCurl->error_code;
+			$wCurl->get('https://clicker.dev/api/v1/users/1', $wArray);
+
+			if ($wCurl->error) {
+	    		echo "Error :".$wCurl->error_code;
+			}
+			else {
+				echo "<h2>Successfull request!</h2>";
+				echo $wCurl->response->id."<br>";
+				echo $wCurl->response->firstname."<br>";
+				echo $wCurl->response->lastname."<br>";
+				echo $wCurl->response->email."<br>";
+			}
+		?>
+		</div>
+		<div>
+			<h1> Testing CAS </h1>
+		<?php
+		
+		phpCAS::client(CAS_VERSION_2_0, 'websso.wwu.edu', 443, '/cas');
+		//at the moment add the following line and comment out the two after that
+		phpCAS::setCasServerCACert("application/config/CA_CAS_FILE.pem");
+		phpCAS::forceAuthentication();
+		if (isset($_REQUEST['logout'])) {
+			phpCAS::logoutWithRedirectService("http://clicker.dev/web/");
 		}
-		else {
-			echo $wCurl->response->id."<br>";
-			echo $wCurl->response->firstname."<br>";
-			echo $wCurl->response->lastname."<br>";
-			echo $wCurl->response->email."<br>";
-		}
-	?>
-	</div>
+		?>
+		<div>
+			<h2>Successfull Authentication!</h2>
+			<p>The user's login is <strong><?php echo phpCAS::getUser(); ?></strong></p>
+			<p>The phpCAS version is <strong><?php echo phpCAS::getVersion(); ?></strong></p>
+			<p><a href="?logout=">Logout</a></p>
+		</div>
+
+		</div>
 
 	<p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds</p>
 </div>
