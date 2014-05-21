@@ -394,7 +394,12 @@
  */
 	if (class_exists('CI_DB') AND isset($CI->db))
 	{
-		$CI->db->close();
+        // TEMP CODE TO USE PDO
+        $CI->db = null;
+        // END OF TEMP CODE
+        // BEGIN OF OLD Code
+        // $CI->db->close();
+        // END OF OLD CODE
 	}
 
 
