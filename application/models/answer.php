@@ -156,13 +156,13 @@ Class Answer {
 	}
 
 	 /**
-	 * saveAnswer
+	 * save
 	 * Saves or updates an Answer in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param $aAnswer an Answer object
 	 */
-	public static function saveAnswer($aDb,$aAnswer){
+	public static function save($aDb,$aAnswer){
 		$wRequest = $aDb->prepare("INSERT INTO Answers (id,question_id,number,value,correct)  
 									VALUES (:id,:question_id,:number,:value,:correct)
 									ON DUPLICATE KEY UPDATE question_id=:question_id,number=:number,value=:value,correct=:correct");
@@ -175,13 +175,13 @@ Class Answer {
 	}
 
 	/**
-	 * delAnswer
+	 * delete
 	 * Deletes a Answer in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public static function delAnswer($aDb,$aId){
+	public function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM Answers WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();

@@ -1,9 +1,5 @@
 <?php
 
-// look at the db diagram to find out what needs to be in it.
-// write function save (that does update as well) and delete
-// write factory function to retrieve Questions (look at API routes to find out which)
-
 /**
  * This class is the model used to handle Questions. The class contains the factory
  * functions needed to create Questions.
@@ -170,13 +166,13 @@ Class Question {
 	}
 
 	/**
-	 * saveQuestion
+	 * save
 	 * Saves or updates a Question in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param $aQuestion  a Question object
 	 */
-	public static function saveQuestion($aDb, $aQuestion){
+	public static function save($aDb, $aQuestion){
 		$wRequest = $aDb->prepare("INSERT INTO Questions (id, number, quiz_id, type, question)  
 									VALUES (:id,:number,:quiz_id,:type,:question)
 									ON DUPLICATE KEY UPDATE number=:number,quiz_id=:quiz_id,type=:type,question=:question");
@@ -189,13 +185,13 @@ Class Question {
 	}
 
 	/**
-	 * delQuestion
+	 * delete
 	 * Deletes a Question in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public static function delQuestion($aDb,$aId){
+	public function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM Questions WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();

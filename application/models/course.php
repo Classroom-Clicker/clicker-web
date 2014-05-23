@@ -1,9 +1,5 @@
 <?php
 
-// look at the db diagram to find out what needs to be in it.
-// write function save (that does update as well) and delete
-// write factory function to retrieve courses (look at API routes to find out which)
-
 /**
  * This class is the model used to handle Courses. The class contains the factory
  * functions needed to create Courses.
@@ -125,13 +121,13 @@ Class Course extends CI_Model{
 	}
 
 	/**
-	 * saveCourse
+	 * save
 	 * Saves or updates a Course in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aCourse  a Course object
 	 */
-	public static function saveCourse($aDb,$aCourse){
+	public static function save($aDb,$aCourse){
 		$wRequest = $aDb->prepare("INSERT INTO Courses (id,name,user_id)  
 									VALUES (:id,:name,:user_id)
 									ON DUPLICATE KEY UPDATE name=:name, user_id=:user_id");
@@ -142,13 +138,13 @@ Class Course extends CI_Model{
 	}
 
 	/**
-	 * delCourse
+	 * delete
 	 * Deletes a Course in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public static function delCourse($aDb,$aId){
+	public function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM Courses WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();

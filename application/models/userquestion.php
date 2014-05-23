@@ -1,9 +1,5 @@
 <?php
 
-// look at the db diagram to find out what needs to be in it.
-// write function save (that does update as well) and delete
-// write factory function to retrieve UserQuestions (look at API routes to find out which)
-
 /**
  * This class is the model used to handle UserQuestions. The class contains the factory
  * functions needed to create UserQuestions.
@@ -148,13 +144,13 @@ Class UserQuestion {
 
 
 	/**
-	 * saveUserQuestion
+	 * save
 	 * Saves or updates a UserQuestion in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aUserQuestion  a UserQuestion object
 	 */
-	public static function saveUserQuestion($aDb, $aUserQuestion){
+	public static function save($aDb, $aUserQuestion){
 		$wRequest = $aDb->prepare("INSERT INTO UserQuestions (id, quizsession_id, user_id, question_id)  
 									VALUES (:id,:quizsession_id,:user_id,:question_id)
 									ON DUPLICATE KEY UPDATE id=:id, quizsession_id=:quizsession_id, user_id=:user_id, question_id=:question_id");
@@ -166,13 +162,13 @@ Class UserQuestion {
 	}
 
 	/**
-	 * delUserQuestion
+	 * delete
 	 * Deletes a UserQuestion in the database
 	 * 
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public static function delUserQuestion($aDb,$aId){
+	public function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM UserQuestions WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();

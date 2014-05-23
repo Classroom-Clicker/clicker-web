@@ -108,13 +108,13 @@ Class UserAnswer {
     }
 
     /**
-     * saveUserAnswer
+     * save
      * Saves or updates a UserAnswer in the database
      * 
      * @param $aDb PDO object db
      * @param  $aUserAnswer  a UserAnswer object
      */
-    public static function saveUserAnswer($aDb,$aUserAnswer){
+    public static function save($aDb,$aUserAnswer){
         $wRequest = $aDb->prepare("INSERT INTO UserAnswers (id,userquestion_id,answer_id)  
                                     VALUES (:id,:userquestion_id,:answer_id)
                                     ON DUPLICATE KEY UPDATE userquestion_id=:userquestion_id, answer_id=:answer_id");
@@ -125,13 +125,13 @@ Class UserAnswer {
     }
 
     /**
-     * delUserAnswer
+     * delete
      * Deletes a UserAnswer in the database
      * 
      * @param $aDb PDO object db
      * @param  $aId an integer id
      */
-    public static function delUserAnswer($aDb,$aId){
+    public function delete($aDb,$aId){
         $wRequest = $aDb->prepare("DELETE FROM UserAnswers WHERE id=:id");
         $wRequest->bindParam(":id",$aId);  
         $wRequest->execute();
