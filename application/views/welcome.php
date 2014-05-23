@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<?php include "includes/head.php"; ?>
-		<title>WWU CCDC Blog</title>
+		<title>Classroom cicker</title>
 	</head>
 	<body>
 		<div id='all'>
