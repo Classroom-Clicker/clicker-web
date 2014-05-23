@@ -160,7 +160,6 @@ Class Answer {
 	 * Saves or updates an Answer in the database
 	 * 
 	 * @param $aDb PDO object db
-	 * @param $aAnswer an Answer object
 	 */
 	public function save($aDb){
 		$wRequest = $aDb->prepare("INSERT INTO Answers (id,question_id,number,value,correct)  
