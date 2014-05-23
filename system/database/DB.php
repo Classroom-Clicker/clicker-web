@@ -153,16 +153,6 @@ function &DB($params = '', $active_record_override = NULL)
 		$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
 	}
 
-    // BEGIN OF TEMP CODE TO USE PDO
-    //connect to a database using PDO
-    try{
-        //to connect
-        $DB = new PDO($params['dbdriver'].':host='.$params['hostname'].'; dbname='.$params['database'], $params['username'], $params['password']);
-    }
-    catch(PDOException $e) {
-        echo 'Please contact Admin: '.$e->getMessage();
-    }
-    // END OF TEMP CODE TO USE PDO
 	return $DB;
 }
 

@@ -1,10 +1,10 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once "cas.php";
+require_once "BaseController.php";
 /**
  * This class is the User controller.
  */
-class Users extends Cas {
+class Users extends BaseController {
 
 	/**
 	 *
