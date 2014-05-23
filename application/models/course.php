@@ -125,7 +125,6 @@ Class Course extends CI_Model{
 	 * Saves or updates a Course in the database
 	 * 
 	 * @param $aDb PDO object db
-	 * @param  $aCourse  a Course object
 	 */
 	public function save($aDb){
 		$wRequest = $aDb->prepare("INSERT INTO Courses (id,name,user_id)  
