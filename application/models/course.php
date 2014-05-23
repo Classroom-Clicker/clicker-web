@@ -127,13 +127,13 @@ Class Course extends CI_Model{
 	 * @param $aDb PDO object db
 	 * @param  $aCourse  a Course object
 	 */
-	public static function save($aDb,$aCourse){
+	public function save($aDb){
 		$wRequest = $aDb->prepare("INSERT INTO Courses (id,name,user_id)  
 									VALUES (:id,:name,:user_id)
 									ON DUPLICATE KEY UPDATE name=:name, user_id=:user_id");
-		$wRequest->bindParam(":id", $aCourse->getId(),PDO::PARAM_INT);
-		$wRequest->bindParam(":name", $aCourse->getName(),PDO::PARAM_STR);
-		$wRequest->bindParam(":user_id", $aCourse->getUserId(),PDO::PARAM_INT);
+		$wRequest->bindParam(":id", $this->id,PDO::PARAM_INT);
+		$wRequest->bindParam(":name", $this->name,PDO::PARAM_STR);
+		$wRequest->bindParam(":user_id", $this->user_id,PDO::PARAM_INT);
 		$wRequest->execute();
 	}
 
@@ -144,7 +144,7 @@ Class Course extends CI_Model{
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public function delete($aDb,$aId){
+	public static function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM Courses WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();
