@@ -24,22 +24,22 @@ Class Permission {
 
 	/**
 	 * save
-	 * save the Role object in the database
+	 * save the Permission object in the database
 	 *
 	 * @param $aDb PDO object
 	 */
 	public function save($aDb){
 
-		$wRequest = $aDb->prepare("INSERT INTO Permissions(id,name) VALUES(:user_id,:type,:parent_id,:name)
+		$wRequest = $aDb->prepare("INSERT INTO Permissions(id,name) VALUES(:id,:name)
 			ON DUPLICATE KEY UPDATE name=:name;");
-		$wRequest->bindParam(":user_id", $this->getId(), PDO::PARAM_INT);
+		$wRequest->bindParam(":id", $this->getId(), PDO::PARAM_INT);
 		$wRequest->bindParam(":name", $this->getName(), PDO::PARAM_STR);
 		$wRequest->execute();
 	}
 
 	/**
 	 * delete
-	 * delete the Role object from the database
+	 * delete the Permission from the database
 	 *
 	 * @param $aDb PDO object
 	 * @param $aId int id of Permission to delete
