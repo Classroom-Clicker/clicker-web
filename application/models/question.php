@@ -170,17 +170,16 @@ Class Question {
 	 * Saves or updates a Question in the database
 	 * 
 	 * @param $aDb PDO object db
-	 * @param $aQuestion  a Question object
 	 */
-	public static function save($aDb, $aQuestion){
+	public function save($aDb){
 		$wRequest = $aDb->prepare("INSERT INTO Questions (id, number, quiz_id, type, question)  
 									VALUES (:id,:number,:quiz_id,:type,:question)
 									ON DUPLICATE KEY UPDATE number=:number,quiz_id=:quiz_id,type=:type,question=:question");
-		$wRequest->bindParam(":id", $aQuestion->getId(),PDO::PARAM_INT);
-		$wRequest->bindParam(":number", $aQuestion->getNumber(),PDO::PARAM_INT);
-		$wRequest->bindParam(":quiz_id", $aQuestion->getQuizId(),PDO::PARAM_INT);
-		$wRequest->bindParam(":type", $aQuestion->getType(),PDO::PARAM_INT);
-		$wRequest->bindParam(":question", $aQuestion->getQuestion(),PDO::PARAM_STR);
+		$wRequest->bindParam(":id", $this->id,PDO::PARAM_INT);
+		$wRequest->bindParam(":number", $this->number,PDO::PARAM_INT);
+		$wRequest->bindParam(":quiz_id", $this->quiz_id,PDO::PARAM_INT);
+		$wRequest->bindParam(":type", $this->type,PDO::PARAM_INT);
+		$wRequest->bindParam(":question", $this->question,PDO::PARAM_STR);
 		$wRequest->execute();
 	}
 
@@ -191,7 +190,7 @@ Class Question {
 	 * @param $aDb PDO object db
 	 * @param  $aId an integer id
 	 */
-	public function delete($aDb,$aId){
+	public static function delete($aDb,$aId){
 		$wRequest = $aDb->prepare("DELETE FROM Questions WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();
