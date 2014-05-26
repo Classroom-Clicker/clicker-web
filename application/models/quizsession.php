@@ -1,9 +1,5 @@
 <?php
 
-// TODO complete this model
-// look at the db diagram to find out what needs to be in it.
-// write factory function to retrieve courses (look at API routes to find out which)
-
 /**
  * This class is the model used to handle QuizSessions. The class contains the factory
  * functions needed to create QuizSessions.
