@@ -2,7 +2,6 @@
 
 <html>
 <head>
-	form.btn-group + form.btn-group {margin-left: -5px;}
 	<?php include "includes/head.php"; ?>
 	<title>Classroom Clicker</title>
 </head>
