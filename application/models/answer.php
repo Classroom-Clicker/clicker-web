@@ -14,6 +14,14 @@ Class Answer {
 	private $value;
 	private $correct;
 
+	function __construct5($aId,$aQuestionId,$aNumber,$aValue,$aCorrect){
+		$this->id = $aId;
+		$this->question_id = $aQuestionId;
+		$this->number = $aNumber;
+		$this->value = $aValue;
+		$this->correct = $aCorrect;
+	}
+
 	/**
 	 * getJson
 	 *
@@ -185,6 +193,22 @@ Class Answer {
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();
 	}
+
+	/**
+	 * deleteByNumber
+	 * Deletes a Answer in the database
+	 * 
+	 * @param $aDb PDO object db
+	 * @param  $aQuestionId an integer question_id
+	 * @param  $aNumber an integer answers number
+	 */
+	public static function deleteByNumber($aDb,$aQuestionId,$aNumber){
+		$wRequest = $aDb->prepare("DELETE FROM Answers WHERE number=:number AND question_id=:question_id");
+		$wRequest->bindParam(":number",$aNumber);
+		$wRequest->bindParam(":question_id",$aQuestionId);  
+		$wRequest->execute();
+	}
+
 
 }
 
