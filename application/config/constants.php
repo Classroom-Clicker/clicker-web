@@ -35,7 +35,9 @@ define('FOPEN_WRITE_CREATE',					'ab');
 define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
-
+define('IMG',	'application/views/includes/img');
+define('CSS',	'application/views/includes/css/');
+define('JS',	'application/views/includes/js');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
