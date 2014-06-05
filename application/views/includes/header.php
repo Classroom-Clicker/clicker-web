@@ -2,7 +2,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="<?php base_url(); ?>">Classroom clicker</a>
+				<a class="navbar-brand" href="<?php echo base_url(); ?>">Classroom clicker</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<?php if(phpCas::isAuthenticated()){ ?>
@@ -18,5 +18,5 @@
 			</div>
 		</div>
 	</div>
-	<div class="container" style='margin-top:60px'>
+	<div class="container" style='margin-top:60px'></div>
 </div>

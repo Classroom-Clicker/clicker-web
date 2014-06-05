@@ -142,7 +142,6 @@ Class UserQuestion {
 		return $wUserQuestion;
 	}
 
-
 	/**
 	 * save
 	 * Saves or updates a UserQuestion in the database

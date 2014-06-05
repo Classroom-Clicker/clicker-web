@@ -190,6 +190,26 @@ Class QuizSession {
 	}
 
 	/**
+	 * getQuizSessionsByQuizId
+	 * Returns a QuizSession object that is found using the given quiz id and
+	 * PDO object db
+	 *
+	 * @param  $db2  The database	 
+	 * @param  $aId  The id of the QuizSession
+	 * @return  a QuizSession object
+	 */
+	public static function getQuizSessionsByQuizId($db, $aQuizId){
+		$wRequest = $db->prepare("Select id,quiz_id,user_id,date_begin,status,question FROM QuizSessions WHERE quiz_id=:quiz_id;");
+		$wRequest->bindParam(":quiz_id", $aQuizId);
+		$wRequest->execute();
+		$wQuizSessions = NULL;
+		while($wQuizSession = $wRequest->fetchObject("QuizSession")){
+			$wQuizSessions[] = $wQuizSession;
+		}
+		return $wQuizSessions;
+	}
+
+	/**
 	 * delete
 	 * Deletes a QuizSession that is found using the given QuizSession id and
 	 * PDO object db

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once "BaseController.php";
+require_once "baseController.php";
 /**
  * This class is the User controller.
  */
@@ -19,7 +19,10 @@ class Users extends BaseController {
 	 */
 	public function login() {
 		phpCAS::forceAuthentication();
-		header("Location: ".base_url());
+
+		$wUser = $this->userFactory->getUserByUsername($this->db, phpCAS::getUser());
+		$this->session->set_userdata('user', $wUser);
+		header("Location: ".base_url()."quizzes/");
 	}
 
 	/**
@@ -27,8 +30,8 @@ class Users extends BaseController {
 	 * This function is called when the user needs to logout
 	 */
 	public function logout() {
+		$this->session->sess_destroy();
 		phpCAS::logout();
-		header("Location: ".base_url());
 	}
 }
 

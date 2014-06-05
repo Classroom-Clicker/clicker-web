@@ -12,14 +12,19 @@ class BaseController extends CI_Controller {
 	 */
 	function __construct(){
 		parent::__construct();
+
+		// the User class and then the session to handle user session
+		$this->load->model('UserFactory', 'userFactory');
+		$this->load->library('session');
+
 		// load the database config
 		include APPPATH.'config/database'.EXT;
 		// create the database
 		try{
 			//to connect
 			$this->db = new PDO($db['default']['dbdriver'].':host='.$db['default']['hostname'].'; dbname='.$db['default']['database'], $db['default']['username'], $db['default']['password']);
-		} catch(PDOException $e) {
-			echo 'Please contact Admin: '.$e->getMessage();
+		} catch(PDOException $aException) {
+			echo 'Please contact Admin: '.$aException->getMessage();
 		}
 		phpCAS::client(CAS_VERSION_2_0, 'websso.wwu.edu', 443, '/cas');
 		//at the moment add the following line and comment out the two after that
