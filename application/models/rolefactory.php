@@ -1,6 +1,6 @@
 <?php
-require_once "Role.php";
-require_once "RolePermissionFactory.php";
+require_once "role.php";
+require_once "rolepermissionfactory.php";
 
 /**
  * This class is the container of Role factory functions.

@@ -1,7 +1,7 @@
 <?php
-require_once "User.php";
-require_once "RoleFactory.php";
-require_once "SpecialPermissionFactory.php";
+require_once "user.php";
+require_once "rolefactory.php";
+require_once "specialpermissionfactory.php";
 
 /**
  * This class is the container of User factory functions.

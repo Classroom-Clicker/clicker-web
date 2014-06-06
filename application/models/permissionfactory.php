@@ -1,5 +1,5 @@
 <?php
-require_once "Permission.php";
+require_once "permission.php";
 
 /**
  * This class is the container of Permission factory functions.

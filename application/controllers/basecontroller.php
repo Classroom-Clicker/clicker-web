@@ -14,7 +14,7 @@ class BaseController extends CI_Controller {
 		parent::__construct();
 
 		// the User class and then the session to handle user session
-		$this->load->model('UserFactory', 'userFactory');
+		$this->load->model('userfactory', 'userFactory');
 		$this->load->library('session');
 
 		// load the database config

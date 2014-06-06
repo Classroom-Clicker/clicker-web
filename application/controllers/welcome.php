@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once "baseController.php";
+require_once "basecontroller.php";
+
 /*
  * This class is the Welcome controller.
  * This controller is found at the URI '/' and '/welcome'

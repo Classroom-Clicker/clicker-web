@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once "baseController.php";
+require_once "basecontroller.php";
 /**
  * This class is the User controller.
  */

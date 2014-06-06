@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once "BaseController.php";
+require_once "basecontroller.php";
 /*
  * This class is the Quizzes controller.
  * This controller is found at the URI '/quizzes'

@@ -1,5 +1,5 @@
 <?php
-require_once "SpecialPermission.php";
+require_once "specialpermission.php";
 
 /**
  * This class is the container of SpecialPermission factory functions.
