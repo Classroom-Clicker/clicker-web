@@ -21,6 +21,7 @@ class Quizzes extends BaseController {
 			// If user is logged in
 			$user = $this->session->userdata('user');
 			$quizzes = $this->quiz->getQuizzesByUserId($this->db, $user->getId());
+			// get quizzes in progress here
 
 			$quizIds = array();
 			$quizNames = array();
@@ -147,14 +148,75 @@ class Quizzes extends BaseController {
 				}
 			}
 	
-			$this->question->delete($this->db,$aId);
+			$this->question->delete($this->db, $aId);
 			redirect('/quizzes/edit/'.$aQuizId, 'refresh');
 		}
 		else{
 			redirect('/', 'refresh');
 		}
-
 	}
+
+	public function sessionStart($aQuizId){
+		// TODO add proper permissions
+		if(phpCas::isAuthenticated()){
+			$wCurrentUser = $this->session->userdata('user');
+			//if($wCurrentUser->isAllowed('start_quizz', $aQuizId)){ // allowed}
+			// load Sessions
+			$this->load->model('quizSession','quizSession');
+			date_default_timezone_set('UTC');
+
+			$wSession = new QuizSession();
+			$wSession->setQuizId($aQuizId);
+			$wSession->setUserId($wCurrentUser->getId());
+			$wSession->setDateBegin(date('Y-m-d'));
+			$wSession->setStatus(1);
+
+			$wSession->save($this->db);
+
+			redirect('/quizzes/session/'.$wSession->getId(), 'refresh');
+		}
+		else{
+			redirect('/', 'refresh');
+		}
+	}
+
+	public function session($aSessionId){
+		$this->load->model('quizSession','quizSession');
+
+		if(phpCas::isAuthenticated()){
+			$wCurrentUser = $this->session->userdata('user');
+			$wSession =QuizSession::getQuizSessionById($this->db, $aSessionId);	
+			if($wSession && $wCurrentUser->getId() == $wSession->getUserId()){
+				$wData['wQuizSession'] = $wSession;
+				$this->load->view('prof_view_quiz',$wData);
+			}else{
+				redirect('/', 'refresh');
+			}
+		}else{
+			redirect('/', 'refresh');
+		}
+	}
+
+	public function sessionChangeStatus($aSession, $aNewStatus){
+		$this->load->model('quizSession','quizSession');
+
+		if(phpCas::isAuthenticated()){
+			$wCurrentUser = $this->session->userdata('user');
+			$wSession =QuizSession::getQuizSessionById($this->db, $aSessionId);	
+			
+			if($wSession && $wCurrentUser->getId() == $wSession->getUserId()){
+				$wSession->setStatus($aNewStatus);
+				$wSession->save($this->db);
+				redirect('/', 'refresh');
+			} else {
+				redirect('/', 'refresh');
+			}
+		} else {
+			redirect('/', 'refresh');
+		}
+	}
+
+
 }
 /* End of file quizzes.php */
 /* Location: ./application/controllers/quizzes.php */

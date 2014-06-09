@@ -12,7 +12,10 @@ Class QuizSession {
 	private $user_id;
 	private $date_begin;
 	private $status;
-	private $question;
+	// status of a session :
+	// 0 : finished, results available
+	// 1 : in progress, results not available
+	// 2 : paused, results not available
 
 	/**
 	 * getJson
@@ -27,7 +30,6 @@ Class QuizSession {
 		$var['user_id'] = (int)$this->user_id;
 		$var['date_begin'] = (string)$this->date_begin;
 		$var['status'] = (int)$this->status;
-		$var['question'] = (int)$this->question;
 
 		return json_encode($var);
 	}
@@ -83,16 +85,6 @@ Class QuizSession {
 	}
 
 	/**
-	 * getQuestion
-	 *
-	 * getter of Question
-	 * @return an integer
-	 */
-	public function getQuestion(){
-		return $this->question;
-	}
-
-	/**
 	 * setId 
 	 * setter of QuizSession id
 	 *
@@ -143,33 +135,29 @@ Class QuizSession {
 	}
 
 	/**
-	 * setQuestion
-	 * setter of Question
-	 *
-	 * @param an integer
-	 */
-	public function setQuestion($aQuestion) {
-		$this->question = $aQuestion;
-	}
-
-	/**
 	 * save
 	 * Saves or updates a QuizSession in the database
 	 * PDO object db
 	 *
-	 * @param  $db2  The database	 
+	 * @param  $db The database	 
 	 */
 	public function save($db) {
-		$wRequest = $db->prepare("INSERT INTO QuizSessions (id,quiz_id,user_id,date_begin,status,question)
-		VALUES (:id,:quiz_id,:user_id,:date_begin,:status,:question)
-		ON DUPLICATE KEY UPDATE quiz_id=:quiz_id, user_id=:user_id, date_begin=:date_begin, status=:status, question=:question");
+		$wRequest = $db->prepare("INSERT INTO QuizSessions (id,quiz_id,user_id,date_begin,status)
+		VALUES (:id,:quiz_id,:user_id,:date_begin,:status)
+		ON DUPLICATE KEY UPDATE quiz_id=:quiz_id, user_id=:user_id, date_begin=:date_begin, status=:status");
 		$wRequest->bindParam(":id", $this->id,PDO::PARAM_INT);
 		$wRequest->bindParam(":quiz_id", $this->quiz_id,PDO::PARAM_INT);
 		$wRequest->bindParam(":user_id", $this->user_id,PDO::PARAM_INT);
 		$wRequest->bindParam(":date_begin", $this->date_begin,PDO::PARAM_STR);
 		$wRequest->bindParam(":status", $this->status,PDO::PARAM_INT);
-		$wRequest->bindParam(":question", $this->question,PDO::PARAM_INT);
 		$wRequest->execute();
+
+		// 
+		// get the id and set it
+		$wNewId = $db->lastInsertId();
+		if($wNewId != 0){
+			$this->setId($wNewId);
+		}
 	}
 
 	/**
@@ -182,7 +170,7 @@ Class QuizSession {
 	 * @return  a QuizSession object
 	 */
 	public static function getQuizSessionById($db, $aId){
-		$wRequest = $db->prepare("Select id,quiz_id,user_id,date_begin,status,question FROM QuizSessions WHERE id=:id;");
+		$wRequest = $db->prepare("Select id,quiz_id,user_id,date_begin,status FROM QuizSessions WHERE id=:id;");
 		$wRequest->bindParam(":id", $aId);
 		$wRequest->execute();
 		$wQuizSession = $wRequest->fetchObject("QuizSession");
@@ -199,7 +187,7 @@ Class QuizSession {
 	 * @return  a QuizSession object
 	 */
 	public static function getQuizSessionsByQuizId($db, $aQuizId){
-		$wRequest = $db->prepare("Select id,quiz_id,user_id,date_begin,status,question FROM QuizSessions WHERE quiz_id=:quiz_id;");
+		$wRequest = $db->prepare("Select id,quiz_id,user_id,date_begin,status FROM QuizSessions WHERE quiz_id=:quiz_id;");
 		$wRequest->bindParam(":quiz_id", $aQuizId);
 		$wRequest->execute();
 		$wQuizSessions = NULL;
