@@ -17,16 +17,19 @@
 				</div>
 			</div>
 
-	<div class="container">
 	<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+	<?php if($count > 0) { ?>
 	<li class="active"><a href="#tab0" data-toggle="tab">Question 1 </a></li>
-
+	
 	<?php
 	for($i = 1; $i < $count; $i++){
 		print '
+
 	<li><a href="#tab'.($i).'" data-toggle="tab">Question '.($i+1).'</a></li>';	}?>
 	<li><a href="#new" data-toggle="tab">New</a></li>
-
+	<?php } else { ?>
+	<li class="active"><a href="#new" data-toggle="tab">New</a></li>
+	<?php } ?>
 	</ul>
 	<div id="my-tab-content" class="tab-content">
 
@@ -39,16 +42,19 @@
 		else{
 			print '<div class="tab-pane" id="tab'.$k.'">';
 		} ?>
-
-		<h2>Enter the Question:</h2>
 		<?php print '
-		<form role="form" action='.base_url('/quizzes/save/'.($questions[$k]->getId()).'/'.($k+1).'/'.$quiz_id).' method="post">';?>
-		<div class="form-group">
+		<form role="form" action='.base_url('/quizzes/save/'.($questions[$k]->getId()).'/'.($k+1).'/'.$quiz_id).' method="post">';?>		<div class="form-group"> 
+
+		<h2>Quiz Name:</h2>
+
+		<input type="text" value=<?php echo '"'.$quiz_name.'" ';?> name="quizName" id="quizName" class="form-control" placeholder="Enter Quiz Name">
+
+		<h2>Question:</h2>
+		
 			<?php print '
 			<textarea class="form-control" placeholder="Enter a Question" id="question" name="question" rows="2" cols="50">'.$questions[$k]->getQuestion().'</textarea>
 
 			<h4>Enter up to six answers and select the correct one:</h4>';
-			//var_dump($questions);
 			$answers = $questions[$k]->getAnswers($this->db,$questions[$k]);
 			for ($i = 0; $i < 6; $i++) { ?>
 			<div class="col-lg-6">
@@ -57,7 +63,6 @@
 				if(array_key_exists($i, $answers) and $answers[$i]->getCorrect() == 1){
 					print '<span class="input-group-addon active">
 						<input name="answer" value="'.$i.'" id="radio'.$i.'" type="radio" checked="">';
-
 				}
 				else{
 					print '<span class="input-group-addon">
@@ -72,7 +77,6 @@
 					print '<input type="text" name="text'.$i.'" id="text'.$i.'" textplaceholder="Enter an answer" value=" " class="form-control">';
 				} ?>	
 
- 
 				</div>
 			</div>	
 	 	<?php } ?>
@@ -80,23 +84,32 @@
 	 	<div class="btn-group">
 		<button type="submit" name="addQuestion<?php echo $k?>" class="btn">Save Question</button>
 	</form>
-	<form role="form" action=<?php print base_url('/quizzes/deleteQuestion/'.($questions[$k]->getId()));?> method="POST">
+	<form role="form" action=<?php print base_url('/quizzes/deleteQuestion/'.($questions[$k]->getId()).'/'.$quiz_id);?> method="POST">
 		<button type="submit" name="deleteQuestion" class="btn">Delete Question</button>
+	</form>
+	<?php print '
+	<form role="form" action='.base_url('/quizzes/index/').' method="post">';?>
+		<button type="submit" name="addNew" class="btn">done</button>
 	</form>
 	</div>
 	</div>
 	<!-- Add New Question Tab -->
-	<?php $last = $k; } ?>
+	<?php $last = $k+1; } ?>
 		<?php if($last == 0){ ?>
 			<div class="tab-pane active" id="new">
 		<?php }
 		else{
 			print '<div class="tab-pane" id="new">';
 		} ?>
-
-		<h2>Enter the Question:</h2>
+		
 		<?php print '<form role="form" action="'.base_url('/quizzes/save/null/'.($count+1).'/'.$quiz_id).'/" method="post">';?>
 		<div class="form-group">
+
+		<h2>Quiz Name:</h2>
+
+		<input type="text" value=<?php echo '"'.$quiz_name.'" ';?> name="quizName" id="quizName" class="form-control" placeholder="Enter Quiz Name">
+		<h2>Enter the Question:</h2>
+	
 			<textarea class="form-control" placeholder="Enter a Question" id="question" name="question" rows="2" cols="50"></textarea>
 
 			<h4>Enter up to six answers and select the correct one:</h4>
