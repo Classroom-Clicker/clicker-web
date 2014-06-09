@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<?php include "includes/head.php"; ?>
-		<title>Classroom cicker - Result</title>
+		<title>Classroom clicker - Result</title>
 	</head>
 	<body>
 		<div id='all'>
@@ -12,8 +12,7 @@
 				<div class="row row-offcanvas row-offcanvas-left">
 					<div class="col-sm-3 col-md-2 sidebar-offcanvas">
 						<ul class="nav nav-list bs-docs-sidenav affix">
-							<li><a href="<?php echo base_url()."users"?>"> MyAccount</a></li>
-							<li><a href="<?php echo base_url()."quizzes"?>"> Quizzes</a></li>
+							<li><a href="<?php echo base_url()."quizzes"?>">My Quizzes</a></li>
 						</ul>
 					</div>
 					<div class="col-sm-9 col-md-10 main">
@@ -25,7 +24,7 @@
 							<?php
 							$wActive = 'active';
 							foreach ($wResults as $wResult) {
-								echo '<li class="'.$wActive.'"><a href="#'.$wResult['id'].'" data-toggle="tab">'.$wResult['id'].'</a></li>';
+								echo '<li class="'.$wActive.'"><a href="#'.$wResult['id'].'" data-toggle="tab">'.$wResult['date'].'</a></li>';
 								$wActive = "";
 							}
 							?>
@@ -36,7 +35,6 @@
 							$wActive = 'active';
 							foreach ($wResults as $wResult) {
 								echo '<div class="tab-pane '.$wActive.'" id="'.$wResult['id'].'">';
-								echo '<p>This quizz has been done the done the '.$wResult['date'].'</p>';
 								echo '	<table class="table table-striped">';
 								echo '		<thead>';
 								echo '			<tr>';

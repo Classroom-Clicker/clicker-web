@@ -7,10 +7,17 @@
 	<body>
 		<div id='all'>
 			<?php include "includes/header.php"; ?>
-			<div id='content' class="modal-body row">
-				<div class="col-md-6">
+			<div id='content' class='container'>
+
+				<div class="row">
+					<!-- Take a quiz with the given Quiz ID -->
+					<input type="text" id="quizid" name="quizid" placeholder="Quiz ID"></input>
+					<button onclick="takeButton()" type="submit" class="btn btn-default">Take Quiz</button>
+				</div>
+
+				<div class="row">
 					<h1>My Quizzes</h1>
-					<div class="container">
+					<div>
 						<button onclick="newButton()" type="submit" class="btn btn-default">New Quiz</button><br><br>
 
 						<!-- List view displaying each quiz. Click to select -->
@@ -65,43 +72,41 @@
 						<script>
 							// On click listener for new button
 							function newButton() {
-								var redirect = 'edit/null'
+								var redirect = '/quizzes/edit/null'
 								buttonHandler(redirect);
 							}
 
 							// On click listener for start button
 							function startButton() {
-								var base = 'start/'
+								var base = '/quizzes/Sessionstart/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for edit button
 							function editButton() {
-								var base = 'edit/'
+								var base = '/quizzes/edit/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for view results button
 							function resultsButton() {
-								var base = 'results/quiz/'
+								var base = '/results/quiz/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for take quiz button
 							function takeButton() {
-								var base = 'take/'
+								var base = '/quizzes/take/'
 								var id = document.getElementById('quizid').value;
 								var redirect = base.concat(id);
 								buttonHandler(redirect);
 							}
 
 							// Creates form based on which button was clicked.
-							function buttonHandler(s) {
-								var baselink = '/clicker-web/quizzes/';
-								var redirect = baselink.concat(s);
+							function buttonHandler(redirect) {
 
 								var form = document.createElement("form");
 								form.setAttribute("method", "POST");
@@ -111,11 +116,6 @@
 							}
 						</script>
 					</div>
-				</div>
-				<div class="col-md-6">
-					<!-- Take a quiz with the given Quiz ID -->
-					<input type="text" id="quizid" name="quizid" placeholder="Quiz ID"></input>
-					<button onclick="takeButton()" type="submit" class="btn btn-default">Take Quiz</button>
 				</div>
 			</div>
 			<?php include "includes/footer.php"; ?>
