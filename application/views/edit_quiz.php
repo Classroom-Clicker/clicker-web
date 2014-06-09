@@ -8,14 +8,7 @@
 <body>
 	<div id='all'>
 		<?php include "includes/header.php"; ?>
-		<div id='content'>
-<!-- Main jumbotron for a primary marketing message or call to action -->
-			<div class="jumbotron">
-				<div class="container">
-					<h1>Classroom clicker</h1>
-					<p>Welcome to the classroom clicker website!</p>
-				</div>
-			</div>
+		<div id='content' class='container'>
 
 	<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
 	<?php if($count > 0) { ?>
@@ -82,14 +75,14 @@
 	 	<?php } ?>
 	 	</div>
 	 	<div class="btn-group">
-		<button type="submit" name="addQuestion<?php echo $k?>" class="btn">Save Question</button>
-	</form>
-	<form role="form" action=<?php print base_url('/quizzes/deleteQuestion/'.($questions[$k]->getId()).'/'.$quiz_id);?> method="POST">
-		<button type="submit" name="deleteQuestion" class="btn">Delete Question</button>
+		<button type="submit" name="addQuestion<?php echo $k?>" class="btn btn-success">Save Question</button>
 	</form>
 	<?php print '
-	<form role="form" action='.base_url('/quizzes/index/').' method="post">';?>
-		<button type="submit" name="addNew" class="btn">done</button>
+	<form role="form" action='.base_url().' method="post">';?>
+		<button type="submit" name="addNew" class="btn btn-success">done</button>
+	</form>
+	<form role="form" action=<?php print base_url('/quizzes/deleteQuestion/'.($questions[$k]->getId()).'/'.$quiz_id);?> method="POST">
+		<button type="submit" name="deleteQuestion" class="btn btn-danger">Delete Question</button>
 	</form>
 	</div>
 	</div>
@@ -128,7 +121,7 @@
 	 	<?php } ?>
 	 	</div>
 	 	<div class="btn-group">
-		<button type="submit" name="addNew" class="btn">Save Question</button>
+		<button type="submit" name="addNew" class="btn btn-success">Save Question</button>
 	</form>	
 </div>
 </div>

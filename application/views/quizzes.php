@@ -14,6 +14,50 @@
 					<input type="text" id="quizid" name="quizid" placeholder="Quiz ID"></input>
 					<button onclick="takeButton()" type="submit" class="btn btn-default">Take Quiz</button>
 				</div>
+				<?php if($sessions){ ?>
+					<div class="row">
+						<h1>Sessions</h1>
+						<ul class="list-group" id="listSession">
+							<?php foreach($sessions as $session){ ?>
+								<a href="#" class="list-group-item"> <?php echo $session->getId(); ?></a>
+							<?php } ?>
+						</ul>
+						<div class="btn-group btn-group-justified">
+							<div class="btn-group">
+								<button onclick="openSession()" type="submit" class="btn btn-default">Open session</button>
+							</div>
+						</div>
+						<script>
+							var activePos = null; // Index of current active list-item, null if none
+							var listSession = <?php echo json_encode($sessionsId); ?>;
+							console.log(activePos);
+
+							/* On click listener for each list view element */
+							$('#listSession .list-group-item').on('click',function(e){
+								var previous = $(this).closest(".list-group").children(".active");
+								previous.removeClass('active'); // previous list-item
+								$(e.target).addClass('active'); // activated list-item
+
+								var nums = document.getElementById("listSession");
+								var listItem = nums.getElementsByTagName("a");
+
+								for (var i=0; i < listItem.length; i++) {
+									if (listItem[i].className=="list-group-item active") {
+										/* Keep track of which item is currently active */
+										activePos = i;
+									}
+								}
+								console.log(listSession[activePos].id);
+							});
+
+							function openSession() {
+								var redirect = 'quizzes/session/'
+								redirect = redirect + listSession[activePos].toString();
+								buttonHandler(redirect);
+							}
+						</script>
+					</div>
+				<?php } ?>
 
 				<div class="row">
 					<h1>My Quizzes</h1>
@@ -36,7 +80,7 @@
 								console.log(activePos);
 
 								/* On click listener for each list view element */
-								$('.list-group-item').on('click',function(e){
+								$('#ul .list-group-item').on('click',function(e){
 									var previous = $(this).closest(".list-group").children(".active");
 									previous.removeClass('active'); // previous list-item
 									$(e.target).addClass('active'); // activated list-item
@@ -52,7 +96,7 @@
 									}
 									console.log(quizIds[activePos]);
 								});
-							</script>	
+							</script>
 						</ul>					
 
 						<!-- Start, Edit, and View Results buttons -->
@@ -72,34 +116,34 @@
 						<script>
 							// On click listener for new button
 							function newButton() {
-								var redirect = '/quizzes/edit/null'
+								var redirect = 'quizzes/edit/null'
 								buttonHandler(redirect);
 							}
 
 							// On click listener for start button
 							function startButton() {
-								var base = '/quizzes/Sessionstart/'
+								var base = 'quizzes/Sessionstart/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for edit button
 							function editButton() {
-								var base = '/quizzes/edit/'
+								var base = 'quizzes/edit/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for view results button
 							function resultsButton() {
-								var base = '/results/quiz/'
+								var base = 'results/quiz/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
 							// On click listener for take quiz button
 							function takeButton() {
-								var base = '/quizzes/take/'
+								var base = 'quizzes/take/'
 								var id = document.getElementById('quizid').value;
 								var redirect = base.concat(id);
 								buttonHandler(redirect);
@@ -107,7 +151,7 @@
 
 							// Creates form based on which button was clicked.
 							function buttonHandler(redirect) {
-
+								redirect = "<?php echo base_url();?>" + redirect;
 								var form = document.createElement("form");
 								form.setAttribute("method", "POST");
 								form.setAttribute("action", redirect);
