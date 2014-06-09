@@ -147,6 +147,10 @@ Class Quiz extends CI_Model{
 		$wRequest->bindParam(":parentquiz", $this->parentquiz,PDO::PARAM_INT);
 		$wRequest->bindParam(":user_id", $this->user_id,PDO::PARAM_INT);
 		$wRequest->execute();
+		$tempId = $db->lastInsertId();
+		if($tempId != 0){
+			$this->id = $tempId;
+		}
 	}
 
 	/**

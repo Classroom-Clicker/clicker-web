@@ -13,6 +13,14 @@ Class Question {
 	private $type;
 	private $question;
 
+	function __construct5($aId,$aNumber,$aQuizId,$aType,$aQuestion){
+		$this->id = $aId;
+		$this->number = $aNumber;
+		$this->quiz_id = $aQuizId;
+		$this->type = $aType;
+		$this->question = $aQuestion;
+	}
+
 	/**
 	 * getJson
 	 *
@@ -133,6 +141,19 @@ Class Question {
 
 
 	/**
+	 * getAnswers
+	 * getter of array of Answers
+	 *
+	 * @return an array of Answers
+	 */
+	public function getAnswers($aDb){
+		$wRequest = $aDb->prepare("SELECT * FROM Answers WHERE question_id=:question_id");
+		$wRequest->bindParam(":question_id", $this->id);
+		$wRequest->execute();
+		return $wRequest->FetchAll(PDO::FETCH_CLASS,"Answer");
+	}
+
+	/**
 	 * getQuestionById
 	 * Returns a Question object that is found using the given id 
 	 * 
@@ -166,6 +187,22 @@ Class Question {
 	}
 
 	/**
+	 * getQuestionsQuizId
+	 * Returns an array Question object that is found using the given quiz id 
+	 * 
+	 * @param $aDb PDO object db
+	 * @param $aId  The id of the Question
+	 * @return  an array Question objects
+	 */
+	public static function getQuestionsByQuizId($aDb, $aId){
+		$wRequest = $aDb->prepare("Select id,number,quiz_id,type,question FROM Questions WHERE quiz_id=:quiz_id;");
+		$wRequest->bindParam(":quiz_id", $aId);
+		$wRequest->execute();
+		$wQuestion = $wRequest->FetchAll(PDO::FETCH_CLASS,"Question");
+		return $wQuestion;
+	}
+
+	/**
 	 * save
 	 * Saves or updates a Question in the database
 	 * 
@@ -181,7 +218,12 @@ Class Question {
 		$wRequest->bindParam(":type", $this->type,PDO::PARAM_INT);
 		$wRequest->bindParam(":question", $this->question,PDO::PARAM_STR);
 		$wRequest->execute();
-	}
+		$tempId = $aDb->lastInsertId();
+		if($tempId != 0){
+			$this->id = $tempId;
+		}
+
+	}	
 
 	/**
 	 * delete
