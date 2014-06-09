@@ -10,7 +10,7 @@ class Results extends BaseController {
 	function __construct(){
 		parent::__construct();
 		$this->load->model('quiz', 'quiz');
-		$this->load->model('quizsession', 'quizsession');
+		$this->load->model('quizsession', 'quizSession');
 		$this->load->model('course', 'course');
 		$this->load->model('useranswer', 'course');
 	}
@@ -23,7 +23,7 @@ class Results extends BaseController {
 		if(!isset($aQuizId)){
 			show_404();
 		}
-		
+		// TODO permission check
 		$wData['wQuiz'] = Quiz::getQuizById($this->db, $aQuizId);
 		$wData['wCourse'] = Course::getCourseById($this->db, $wData['wQuiz']->getCourseId());
 		$wSessions = Quizsession::getQuizSessionsByQuizId($this->db, $aQuizId);
@@ -39,39 +39,48 @@ class Results extends BaseController {
 
 			$wResults;
 			foreach ($wSessions as $wSession) {
-				$wSessionId = $wSession->getId();
-				$wResults[$wSessionId]['id'] = $wSessionId;
-				$wResults[$wSessionId]['max'] = $wQuestionMax;
-				$wResults[$wSessionId]['date'] = $wSession->getDateBegin();
-				for($wI = 1; $wI <= $wQuestionMax; $wI++){
+				if($wSession->getStatus() == 0){
+					$wSessionId = $wSession->getId();
+					$wResults[$wSessionId]['id'] = $wSessionId;
+					$wResults[$wSessionId]['max'] = $wQuestionMax;
+					$wResults[$wSessionId]['date'] = $wSession->getDateBegin();
+					for($wI = 1; $wI <= $wQuestionMax; $wI++){
 
-					// get the question id
-					$wRequest = $this->db->prepare('SELECT Q.id FROM Questions Q JOIN Quizzes Z ON Z.id=Q.quiz_id WHERE Z.id=:id AND Q.number=:number;');
-					$wRequest->bindParam(":id", $aQuizId, PDO::PARAM_INT);
-					$wRequest->bindParam(":number", $wI, PDO::PARAM_INT);
-					$wRequest->execute();
-					$wResponse = $wRequest->fetch();
-					$wQuestionId = $wResponse['id'];
+						// get the question id
+						$wRequest = $this->db->prepare('SELECT Q.id FROM Questions Q JOIN Quizzes Z ON Z.id=Q.quiz_id WHERE Z.id=:id AND Q.number=:number;');
+						$wRequest->bindParam(":id", $aQuizId, PDO::PARAM_INT);
+						$wRequest->bindParam(":number", $wI, PDO::PARAM_INT);
+						$wRequest->execute();
+						$wResponse = $wRequest->fetch();
+						$wQuestionId = $wResponse['id'];
 
-					// get how many correct answers
-					$wRequest = $this->db->prepare('SELECT COUNT(*) as "count" FROM Answers A JOIN UserAnswers U ON A.id=U.answer_id JOIN UserQuestions V ON U.userquestion_id=V.id JOIN Questions Q ON V.question_id=Q.id WHERE Q.id=:id AND A.correct=1;');
-					$wRequest->bindParam(":id", $wQuestionId, PDO::PARAM_STR);
-					$wRequest->execute();
-					$wResponse = $wRequest->fetch();
-					$wResults[$wSessionId][$wI]['correct'] = $wResponse['count'];
+						// get how many correct answers
+						$wRequest = $this->db->prepare('SELECT COUNT(*) as "count" FROM Answers A JOIN UserAnswers U ON A.id=U.answer_id JOIN UserQuestions V ON U.userquestion_id=V.id JOIN Questions Q ON V.question_id=Q.id WHERE Q.id=:id AND V.quizsession_id=:quizsession_id AND A.correct=1;');
+						$wRequest->bindParam(":id", $wQuestionId, PDO::PARAM_INT);
+						$wRequest->bindParam(":quizsession_id", $wSessionId, PDO::PARAM_INT);
+						$wRequest->execute();
+						$wResponse = $wRequest->fetch();
+						$wResults[$wSessionId][$wI]['correct'] = $wResponse['count'];
 
-					// get how many incorrect answers
-					$wRequest = $this->db->prepare('SELECT COUNT(*) as "count" FROM Answers A JOIN UserAnswers U ON A.id=U.answer_id JOIN UserQuestions V ON U.userquestion_id=V.id JOIN Questions Q ON V.question_id=Q.id WHERE Q.id=:id AND A.correct=0;');
-					$wRequest->bindParam(":id", $wQuestionId, PDO::PARAM_STR);
-					$wRequest->execute();
-					$wResponse = $wRequest->fetch();
-					$wResults[$wSessionId][$wI]['incorrect'] = $wResponse['count'];
+						// get how many incorrect answers
+						$wRequest = $this->db->prepare('SELECT COUNT(*) as "count" FROM Answers A JOIN UserAnswers U ON A.id=U.answer_id JOIN UserQuestions V ON U.userquestion_id=V.id JOIN Questions Q ON V.question_id=Q.id WHERE Q.id=:id AND V.quizsession_id=:quizsession_id AND A.correct=0;');
+						$wRequest->bindParam(":id", $wQuestionId, PDO::PARAM_INT);
+						$wRequest->bindParam(":quizsession_id", $wSessionId, PDO::PARAM_INT);
+						$wRequest->execute();
+						$wResponse = $wRequest->fetch();
+						$wResults[$wSessionId][$wI]['incorrect'] = $wResponse['count'];
+					}
 				}
 			}
 			$wData['wResults'] = $wResults;
-
 			$this->load->view('results', $wData);
 		}
+	}
+
+	public function deleteSession($aSessionId){
+		// TODO permission check
+		$this->quizSession->delete($this->db, $aSessionId);
+		redirect($_SERVER['HTTP_REFERER'], 'refresh');
 	}
 }
 

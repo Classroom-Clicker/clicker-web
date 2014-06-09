@@ -14,33 +14,7 @@ class Quizzes extends BaseController {
 		$this->load->model('quiz', 'quiz');
 		$this->load->model('question','question');
 		$this->load->model('answer',"answer");
-	}
-
-	public function index() {
-		if(phpCas::isAuthenticated()) {
-			// If user is logged in
-			$user = $this->session->userdata('user');
-			$quizzes = $this->quiz->getQuizzesByUserId($this->db, $user->getId());
-			// get quizzes in progress here
-
-			$quizIds = array();
-			$quizNames = array();
-
-			foreach ($quizzes as $quiz) {
-				array_push($quizIds, $quiz->getId());
-				array_push($quizNames, $quiz->getName());
-			}
-
-			$data['quizIds'] = $quizIds;
-			$data['quizNames'] = $quizNames;
-			$data['stuff'] = $quizzes;
-
-			$this->load->view('quizzes', $data);
-		} else {
-			// If user is not logged in
-			$this->load->view('welcome');
-		}
-	}
+	}	
 
 	public function edit($aQuizId) {
 		if(phpCas::isAuthenticated()){
@@ -51,7 +25,7 @@ class Quizzes extends BaseController {
 				$wQuiz = $this->quiz->getQuizById($this->db,$aQuizId);
 				//TODO super basic permission check should be updated to our permissions system
 				if($currentUser->getId() != $wQuiz->getUserId()){
-					redirect('/', 'refresh');
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
 				}
 
 				$data['quiz_name'] = $wQuiz->getName();
@@ -66,7 +40,7 @@ class Quizzes extends BaseController {
 			$this->load->view('edit_quiz',$data);
 		}
 		else{
-			redirect('/', 'refresh');
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
@@ -108,13 +82,14 @@ class Quizzes extends BaseController {
 
 			$numAnswers = 6;
 			$i = 0;
+			$radio = $this->input->post('answer');
 			while($i < $numAnswers){
 					$answer = new Answer();
 					$answer->setId(null);
 					$answer->setQuestionId(intval($question->getId(),10));
 					$answer->setNumber($i+1);
 					$answer->setValue($this->input->post('text'.$i));
-					$radio = $this->input->post('answer'.$i);
+					
 					if(isset($radio) and $radio == $i){
 						$answer->setCorrect(1);
 					}
@@ -132,7 +107,7 @@ class Quizzes extends BaseController {
 			redirect('/quizzes/edit/'.$aQuizId, 'refresh');
 		}
 		else{
-			redirect('/', 'refresh');
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
@@ -147,12 +122,11 @@ class Quizzes extends BaseController {
 					redirect('/', 'refresh');
 				}
 			}
-	
 			$this->question->delete($this->db, $aId);
 			redirect('/quizzes/edit/'.$aQuizId, 'refresh');
 		}
 		else{
-			redirect('/', 'refresh');
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
@@ -176,7 +150,7 @@ class Quizzes extends BaseController {
 			redirect('/quizzes/session/'.$wSession->getId(), 'refresh');
 		}
 		else{
-			redirect('/', 'refresh');
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
@@ -187,17 +161,21 @@ class Quizzes extends BaseController {
 			$wCurrentUser = $this->session->userdata('user');
 			$wSession =QuizSession::getQuizSessionById($this->db, $aSessionId);	
 			if($wSession && $wCurrentUser->getId() == $wSession->getUserId()){
-				$wData['wQuizSession'] = $wSession;
-				$this->load->view('prof_view_quiz',$wData);
-			}else{
-				redirect('/', 'refresh');
+				if($wSession->getStatus() != 0){
+					$wData['wQuizSession'] = $wSession;
+					$this->load->view('prof_view_quiz',$wData);
+				} else {
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
+			}else {
+				redirect($_SERVER['HTTP_REFERER'], 'refresh');
 			}
-		}else{
-			redirect('/', 'refresh');
+		}else {
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
-	public function sessionChangeStatus($aSession, $aNewStatus){
+	public function sessionChangeStatus($aSessionId, $aNewStatus){
 		$this->load->model('quizSession','quizSession');
 
 		if(phpCas::isAuthenticated()){
@@ -207,12 +185,16 @@ class Quizzes extends BaseController {
 			if($wSession && $wCurrentUser->getId() == $wSession->getUserId()){
 				$wSession->setStatus($aNewStatus);
 				$wSession->save($this->db);
-				redirect('/', 'refresh');
+				if($aNewStatus == 0){
+					redirect('/', 'refresh');
+				}else{
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+				}
 			} else {
-				redirect('/', 'refresh');
+				redirect($_SERVER['HTTP_REFERER'], 'refresh');
 			}
 		} else {
-			redirect('/', 'refresh');
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
