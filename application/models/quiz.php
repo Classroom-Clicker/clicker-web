@@ -166,6 +166,15 @@ Class Quiz extends CI_Model{
 		return $wQuiz;
 	}
 
+	public static function getQuizzesByUserId($db, $aId){
+		$wRequest = $db->prepare("Select id,name,course_id,parentquiz,user_id FROM Quizzes WHERE user_id=:user_id;");
+		$wRequest->bindParam(":user_id", $aId);
+		$wRequest->execute();
+		$wQuizzes = $wRequest->fetchAll(PDO::FETCH_CLASS,"Quiz");
+		return $wQuizzes;
+
+	}
+
 	/**
 	 * delete
 	 * Deletes a Quiz that is found using the given Quiz id and
