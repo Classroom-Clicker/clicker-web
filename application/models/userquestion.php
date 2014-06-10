@@ -148,7 +148,7 @@ Class UserQuestion {
 	 * 
 	 * @param $aDb PDO object db
 	 */
-	public function save($aDbn){
+	public function save($aDb){
 		$wRequest = $aDb->prepare("INSERT INTO UserQuestions (id, quizsession_id, user_id, question_id)  
 									VALUES (:id,:quizsession_id,:user_id,:question_id)
 									ON DUPLICATE KEY UPDATE id=:id, quizsession_id=:quizsession_id, user_id=:user_id, question_id=:question_id");
@@ -157,6 +157,10 @@ Class UserQuestion {
 		$wRequest->bindParam(":user_id",$this->user_id,PDO::PARAM_INT);
 		$wRequest->bindParam(":question_id", $this->question_id,PDO::PARAM_INT);
 		$wRequest->execute();
+		$tempId = $aDb->lastInsertId();
+		if($tempId != 0){
+			$this->id = $tempId;
+		}
 	}
 
 	/**

@@ -175,12 +175,14 @@ Class Question {
 	 * Returns a Question object that is found using the given id 
 	 * 
 	 * @param $aDb PDO object db
-	 * @param $aId  The id of the Question
+	 * @param $aNumber  The number of the Question
+	 * @param  $aQuizId The id of the quiz the question is in
 	 * @return  a Question object
 	 */
-	public static function getQuestionByNumber($aDb, $aNumber){
-		$wRequest = $aDb->prepare("Select id,number,quiz_id,type,question FROM Questions WHERE number=:number;");
+	public static function getQuestionByNumber($aDb, $aNumber, $aQuizId){
+		$wRequest = $aDb->prepare("Select * FROM Questions WHERE quiz_id=:quiz_id and number=:number;");
 		$wRequest->bindParam(":number", $aNumber);
+		$wRequest->bindParam(":quiz_id", $aQuizId);
 		$wRequest->execute();
 		$wQuestion = $wRequest->fetchObject("Question");
 		return $wQuestion;
@@ -236,7 +238,5 @@ Class Question {
 		$wRequest = $aDb->prepare("DELETE FROM Questions WHERE id=:id");
 		$wRequest->bindParam(":id",$aId);  
 		$wRequest->execute();
-
 	}
-
 }?>
