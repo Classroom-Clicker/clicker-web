@@ -87,8 +87,57 @@ class Results extends BaseController {
 		}
 	}
 
+	public function question($aSessionId, $aQuestionNumber){
+		if(!isset($aQuestionNumber)){
+			show_404();
+		}
+
+		$this->load->model('question', 'question');
+		$this->load->model('answer', 'answer');
+
+		$wSession = Quizsession::getQuizSessionById($this->db, $aSessionId);
+		$wQuestion = Question::getQuestionByNumber($this->db, $aQuestionNumber, $wSession->getQuizId());
+
+		if($wQuestion != null){
+			$wAnswers = $wQuestion->getAnswers($this->db);
+			$wI = 0;
+			$wTotalCount = 0;
+			foreach ($wAnswers as $wAnswer) {
+				$wI++;
+				$wRequest = $this->db->prepare('SELECT U.username FROM Answers A JOIN UserAnswers B ON A.id=B.answer_id JOIN UserQuestions C ON B.userquestion_id=C.id JOIN Users U ON C.user_id=U.id WHERE C.question_id=:question_id AND A.id=:answer_id AND C.quizsession_id=:quizsession_id ORDER BY U.username;');
+				$wRequest->bindParam(":question_id", $wAnswer->getQuestionId(), PDO::PARAM_INT);
+				$wRequest->bindParam(":quizsession_id", $aSessionId, PDO::PARAM_INT);
+				$wRequest->bindParam(":answer_id", $wAnswer->getId(), PDO::PARAM_INT);
+				$wRequest->execute();
+				$wCount = 0;
+				while($wResponse = $wRequest->fetch()){
+					$wData['wUserAnswers'][$wI]['users'][] = $wResponse['username'];
+					$wCount++;
+				}
+				$wData['wUserAnswers'][$wI]['count'] = $wCount;
+				$wTotalCount += $wCount;
+			}
+			
+			$wData['wUserAnswers']['count'] = $wTotalCount;
+			$wData["wQuestion"] = $wQuestion;
+			$wData["wAnswers"] = $wAnswers;
+			$this->load->view('results_details', $wData);
+		}else{
+			// no results to display
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
+		}
+	}
+
 	public function deleteSession($aSessionId){
-		// TODO permission check
+		// TODO real permission check
+		$wQuiz = quizSession::getQuizSessionsById($this->db, $aSessionId);
+		if(phpCas::isAuthenticated()){
+			$currentUser = $this->session->userdata('user');
+			if($currentUser->getId() != $wQuiz->getUserId()){
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+			}
+		}
+
 		$this->quizSession->delete($this->db, $aSessionId);
 		redirect($_SERVER['HTTP_REFERER'], 'refresh');
 	}

@@ -57,6 +57,7 @@
 								echo '					<div class="progress-bar progress-bar-danger" style="width: '.$wIncorrectPercentage.'%"></div>';
 								echo '				</div>';
 								echo '			</td>';
+								echo '			<td><a href="'.base_url().'results/question/'.$wResult['id'].'/'.$wI.'/">details</a></td>';
 								
 								echo '		</tr>';
 							}
