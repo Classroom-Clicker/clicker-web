@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<?php include "includes/head.php"; ?>
-		<title>Classroom Clicker -Quiz</title>
+		<title>Classroom Clicker - Quiz</title>
 	</head>
 	<body>
 		<div id='all'>

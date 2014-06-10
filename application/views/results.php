@@ -33,6 +33,7 @@
 							echo '				<th style="width:10%">Correct</th>';
 							echo '				<th style="width:10%">Incorrect</th>';
 							echo '				<th>Result</th>';
+							echo '				<th style="width:10%"></th>';
 							echo '			</tr>';
 							echo '		</thead>';
 							echo '		<tbody>';
