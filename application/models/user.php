@@ -48,6 +48,10 @@ Class User {
 		$wRequest->bindParam(":firstname", $this->getFirstName(), PDO::PARAM_STR);
 		$wRequest->bindParam(":lastname", $this->getLastName(), PDO::PARAM_STR);
 		$wRequest->execute();
+		$wNewId = $aDb->lastInsertId();
+		if($wNewId > 0){
+			$this->setId($wNewId);
+		}
 	}
 
 	/**
