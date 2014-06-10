@@ -226,7 +226,7 @@ class Quizzes extends BaseController {
 					redirect('/quizzes/question/'.$aSessionId.'/'.($aQuestionNumber+1), 'refresh'); 
 				}
 				else{
-					print 'Quiz Done Redirecting';
+					// Quiz Done Redirecting
 					redirect('/', 'refresh'); 
 				}
 			}
@@ -265,7 +265,7 @@ class Quizzes extends BaseController {
 				redirect('/quizzes/question/'.$aSessionId.'/'.($aQuestionNumber+1), 'refresh'); 
 			}
 			else{
-				print 'Quiz Done Redirecting';
+				// Quiz Done Redirecting
 				redirect('/', 'refresh'); 
 			}	
 		}

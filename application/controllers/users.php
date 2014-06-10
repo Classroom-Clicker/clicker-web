@@ -22,7 +22,7 @@ class Users extends BaseController {
 
 		$wUser = $this->userFactory->getUserByUsername($this->db, phpCAS::getUser());
 		$this->session->set_userdata('user', $wUser);
-		header("Location: ".base_url()."quizzes/");
+		header("Location: ".base_url());
 	}
 
 	/**
