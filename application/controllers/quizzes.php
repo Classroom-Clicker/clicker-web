@@ -17,7 +17,24 @@ class Quizzes extends BaseController {
 		$this->load->model('quizSession', 'quizSession'); 
 		$this->load->model('userquestion', 'userquestion'); 
 		$this->load->model('useranswer', 'useranswer'); 
-	}	
+	}
+
+	public function delete($aQuizId){
+		if(!isset($aQuizId)){
+			show_404();
+		}
+
+		if(phpCas::isAuthenticated()){
+			$currentUser = $this->session->userdata('user');
+
+			$wQuiz = $this->quiz->getQuizById($this->db, $aQuizId);
+			//TODO super basic permission check
+			if($wQuiz && $currentUser->getId() == $wQuiz->getUserId()){
+				$this->quiz->delete($this->db, $aQuizId);
+			}
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
+		}
+	}
 
 	public function edit($aQuizId) {
 		if(phpCas::isAuthenticated()){
@@ -26,7 +43,7 @@ class Quizzes extends BaseController {
 			$data['quiz_id'] = $aQuizId;
 			if($aQuizId != 'null'){
 				$wQuiz = $this->quiz->getQuizById($this->db,$aQuizId);
-				//TODO super basic permission check should be updated to our permissions system
+				//TODO super basic permission check
 				if($currentUser->getId() != $wQuiz->getUserId()){
 					redirect($_SERVER['HTTP_REFERER'], 'refresh');
 				}
@@ -52,7 +69,7 @@ class Quizzes extends BaseController {
 			$currentUser = $this->session->userdata('user');
 			if($aQuizId != 'null'){
 				$quiz = $this->quiz->getQuizById($this->db,$aQuizId);
-				//TODO super basic permission check should be updated to our permissions system
+				//TODO super basic permission check
 				if($currentUser->getId() != $quiz->getUserId()){
 					redirect('/', 'refresh');
 				}
@@ -119,7 +136,7 @@ class Quizzes extends BaseController {
 			$currentUser = $this->session->userdata('user');
 			if($aQuizId != 'null'){
 				$quiz = $this->quiz->getQuizById($this->db,$aQuizId);
-				//TODO super basic permission check should be updated to our permissions system
+				//TODO super basic permission check
 				if($currentUser->getId() != $quiz->getUserId()){
 					redirect('/', 'refresh');
 				}
@@ -203,6 +220,11 @@ class Quizzes extends BaseController {
 
 	public function question($aSessionId, $aQuestionNumber) {
 		if (phpCas::isAuthenticated()) { 
+			$this->load->model('quizSession','quizSession');
+			$wSession =QuizSession::getQuizSessionById($this->db, $aSessionId);	
+			if(!$wSession || $wSession->getStatus() != 1){
+				redirect('/', 'refresh');
+			}
 			//get user, session, question, and answers
 			$wCurrentUser = $this->session->userdata('user'); 
 			$session = $this->quizSession->getQuizSessionById($this->db, $aSessionId); 
@@ -238,11 +260,17 @@ class Quizzes extends BaseController {
 
 	public function answer($aSessionId, $aQuestionNumber, $aAnswerNumber) {
 		if (phpCas::isAuthenticated()) { 
+			
+
 			//get data for user, question, and answer
 			$wCurrentUser = $this->session->userdata('user'); 
 			$wSession = $this->quizSession->getQuizSessionById($this->db, $aSessionId); 
 			$wQuestion = $this->question->getQuestionByNumber($this->db, $aQuestionNumber, $wSession->getQuizId()); 
 			$wAnswer = $this->answer->getAnswerByNumber($this->db,$wQuestion->getId(),$aAnswerNumber);
+
+			if(!$wCurrentUser|| !$wSession || !$wQuestion || !$wAnswer || $wSession->getStatus() != 1){
+				redirect('/', 'refresh');
+			}
 
 			//create new UserQuestion
 			$wUserQuestion = new UserQuestion();

@@ -102,6 +102,9 @@
 								<button onclick="editButton()" type="submit" class="btn btn-default">Edit Quiz</button>
 							</div>
 							<div class="btn-group">
+								<button onclick="deleteButton()" type="submit" class="btn btn-default">Delete Quiz</button>
+							</div>
+							<div class="btn-group">
 								<button onclick="resultsButton()" type="submit" class="btn btn-default">View Results</button>
 							</div>
 						</div>
@@ -145,6 +148,13 @@
 							// On click listener for view results button
 							function resultsButton() {
 								var base = 'results/quiz/'
+								var redirect = base.concat(quizIds[activePos].toString());
+								buttonHandler(redirect);
+							}
+
+							// On click listener for view results button
+							function deleteButton() {
+								var base = 'quizzes/delete/'
 								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}

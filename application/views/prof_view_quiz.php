@@ -9,7 +9,7 @@
 			<?php include "includes/header.php"; ?>
 			<div id='content'>
 				<div class="container">
-					<p>To access that quizz, use the id : <?php echo $wQuizSession->getId();?></p>
+					<h2 style='font-size:600%'>Quiz id : <?php echo $wQuizSession->getId();?></h2>
 					<p>From here, you can start, pause/resume or stop a quizz.</p>
 					<div>
 						<?php if($wQuizSession->getStatus() == 1 ){
