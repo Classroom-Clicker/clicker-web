@@ -11,7 +11,6 @@ class Results extends BaseController {
 		parent::__construct();
 		$this->load->model('quiz', 'quiz');
 		$this->load->model('quizsession', 'quizSession');
-		$this->load->model('course', 'course');
 		$this->load->model('useranswer', 'course');
 	}
 
@@ -23,9 +22,17 @@ class Results extends BaseController {
 		if(!isset($aQuizId)){
 			show_404();
 		}
-		// TODO permission check
-		$wData['wQuiz'] = Quiz::getQuizById($this->db, $aQuizId);
-		$wData['wCourse'] = Course::getCourseById($this->db, $wData['wQuiz']->getCourseId());
+		// TODO real permission check
+		$wQuiz = Quiz::getQuizById($this->db, $aQuizId);
+		if(phpCas::isAuthenticated()){
+			$currentUser = $this->session->userdata('user');
+			if($currentUser->getId() != $wQuiz->getUserId()){
+					redirect($_SERVER['HTTP_REFERER'], 'refresh');
+			}
+		}
+
+
+		$wData['wQuiz'] = $wQuiz;
 		$wSessions = Quizsession::getQuizSessionsByQuizId($this->db, $aQuizId);
 		if($wSessions != null){
 			$wData['wSessions'] = $wSessions;
@@ -74,6 +81,9 @@ class Results extends BaseController {
 			}
 			$wData['wResults'] = $wResults;
 			$this->load->view('results', $wData);
+		}else{
+			// no results to display
+			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
 	}
 
