@@ -163,6 +163,22 @@ Class Answer {
 		return $wRequest->fetchObject("Answer");
 	}
 
+	/**
+	 * getAnswerByNumber
+	 * Returns an Answer object that is found using the given db, question_id and number
+	 *
+	 * @param $db --> The PDO database object
+	 * @param $id --> The id of the question's id
+	 * @param $number ---> The number of the answer in the question
+	 */
+	public static function getAnswerByNumber($db, $id, $number) {
+		$wRequest = $db->prepare('SELECT * FROM Answers WHERE question_id=:question_id and number=:number');
+		$wRequest->bindParam(":question_id", $id);
+		$wRequest->bindParam(":number", $number);
+		$wRequest->execute();
+		return $wRequest->fetchObject("Answer");
+	}
+
 	 /**
 	 * save
 	 * Saves or updates an Answer in the database

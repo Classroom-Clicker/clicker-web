@@ -14,6 +14,9 @@ class Quizzes extends BaseController {
 		$this->load->model('quiz', 'quiz');
 		$this->load->model('question','question');
 		$this->load->model('answer',"answer");
+		$this->load->model('quizSession', 'quizSession'); 
+		$this->load->model('userquestion', 'userquestion'); 
+		$this->load->model('useranswer', 'useranswer'); 
 	}	
 
 	public function edit($aQuizId) {
@@ -68,7 +71,6 @@ class Quizzes extends BaseController {
 				$quiz->setUserId($currentUser->getId());
 				$quiz->save($this->db);
 				$aQuizId = $quiz->getId();
-				var_dump($quiz);
 			}
 
 			$question = new Question();
@@ -184,6 +186,7 @@ class Quizzes extends BaseController {
 			
 			if($wSession && $wCurrentUser->getId() == $wSession->getUserId()){
 				$wSession->setStatus($aNewStatus);
+				
 				$wSession->save($this->db);
 				if($aNewStatus == 0){
 					redirect('/', 'refresh');
@@ -196,6 +199,79 @@ class Quizzes extends BaseController {
 		} else {
 			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
+	}
+
+	public function question($aSessionId, $aQuestionNumber) {
+		if (phpCas::isAuthenticated()) { 
+			//get user, session, question, and answers
+			$wCurrentUser = $this->session->userdata('user'); 
+			$session = $this->quizSession->getQuizSessionById($this->db, $aSessionId); 
+			$question = $this->question->getQuestionByNumber($this->db, $aQuestionNumber, $session->getQuizId()); 
+			$answers = $question->getAnswers($this->db);
+
+			//get value for view 
+			$wData['numAnswers'] = count($answers);
+			$wData['wQuestion'] = $question;
+			$wData['wAnswers'] = $answers; 
+			$wData['wSessionId'] = $aSessionId;
+			$wData['wQuestionNumber'] = $aQuestionNumber;
+			//make sure question actually has answers and redirect
+			if($wData['numAnswers'] != 0){
+				$this->load->view('stud_view_quizz.php', $wData);
+			}
+			else{
+				//check if done and redirect
+				$wNextQuestion = $this->question->getQuestionByNumber($this->db, $aQuestionNumber+1, $session->getQuizId()); 
+				if($wNextQuestion){
+					redirect('/quizzes/question/'.$aSessionId.'/'.($aQuestionNumber+1), 'refresh'); 
+				}
+				else{
+					print 'Quiz Done Redirecting';
+					redirect('/', 'refresh'); 
+				}
+			}
+		}
+		else { 
+		 	redirect('/', 'refresh'); 
+		} 
+	}
+
+	public function answer($aSessionId, $aQuestionNumber, $aAnswerNumber) {
+		if (phpCas::isAuthenticated()) { 
+			//get data for user, question, and answer
+			$wCurrentUser = $this->session->userdata('user'); 
+			$wSession = $this->quizSession->getQuizSessionById($this->db, $aSessionId); 
+			$wQuestion = $this->question->getQuestionByNumber($this->db, $aQuestionNumber, $wSession->getQuizId()); 
+			$wAnswer = $this->answer->getAnswerByNumber($this->db,$wQuestion->getId(),$aAnswerNumber);
+
+			//create new UserQuestion
+			$wUserQuestion = new UserQuestion();
+			$wUserQuestion->setId(null);
+			$wUserQuestion->setQuizSessionId($aSessionId);
+			$wUserQuestion->setUserId($wCurrentUser->getId());
+			$wUserQuestion->setQuestionId($wQuestion->getId());
+			$wUserQuestion->save($this->db);
+			
+			//create new UserAnswer
+			$wUserAnswer = new UserAnswer();
+			$wUserAnswer->setId(null);
+			$wUserAnswer->setUserQuestionId($wUserQuestion->getId());
+			$wUserAnswer->setAnswerId($wAnswer->getId());
+			$wUserAnswer->save($this->db);
+
+			//check if done and redirect
+			$wNextQuestion = $this->question->getQuestionByNumber($this->db, $aQuestionNumber+1, $wSession->getQuizId()); 
+			if($wNextQuestion){
+				redirect('/quizzes/question/'.$aSessionId.'/'.($aQuestionNumber+1), 'refresh'); 
+			}
+			else{
+				print 'Quiz Done Redirecting';
+				redirect('/', 'refresh'); 
+			}	
+		}
+		else { 
+		 	redirect('/', 'refresh'); 
+		} 
 	}
 
 

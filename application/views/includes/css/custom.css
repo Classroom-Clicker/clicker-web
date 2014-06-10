@@ -18,4 +18,8 @@ footer {
 	background-color: #fff;
 }
 
+.btn-group-vertical > button{
+    margin-bottom:10px;
+}
+
 /* end CSS */
