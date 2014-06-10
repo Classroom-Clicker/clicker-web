@@ -10,7 +10,7 @@
 			<?php include "includes/header.php"; ?>
 			<div id='content' class='container'>
 				<script>
-					redirect = "<?php echo base_url();?>" + "/quizzes/save/null/" + "<?php echo ($count+1).'/'.$quiz_id.'/' ?>";
+					redirect = "<?php echo base_url();?>" + "/quizzes/save/null/" + "<?php echo ($numAnswers+1).'/'.$quiz_id.'/' ?>";
 
 					var form = document.createElement("form");
 					form.setAttribute("method", "POST");
