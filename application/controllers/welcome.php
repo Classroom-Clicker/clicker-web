@@ -25,20 +25,25 @@ class Welcome extends BaseController {
 
 			$quizIds = array();
 			$quizNames = array();
+			$sessionsNames = array();
 			$sessionsId = array();
 
 			foreach ($quizzes as $quiz) {
 				array_push($quizIds, $quiz->getId());
 				array_push($quizNames, $quiz->getName());
 			}
-			foreach ($sessions as $session) {
-				array_push($sessionsId, $session->getId());
+			if($sessions){
+				foreach ($sessions as $session) {
+					array_push($sessionsId, $session->getId());
+					$quiz = $this->quiz->getQuizById($this->db, $session->getQuizId());
+					array_push($sessionsNames, $quiz->getName()." - ".$session->getDateBegin());
+				}
 			}
 
 			$data['quizIds'] = $quizIds;
 			$data['quizNames'] = $quizNames;
 			$data['stuff'] = $quizzes;
-			$data['sessions'] = $sessions;
+			$data['sessionsNames'] = $sessionsNames;
 			$data['sessionsId'] = $sessionsId;
 
 			$this->load->view('quizzes', $data);

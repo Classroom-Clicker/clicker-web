@@ -73,8 +73,8 @@ Class UserFactory {
 		$wRequest->bindParam(":username", $aUsername, PDO::PARAM_STR);
 		$wRequest->execute();
 		$wUser = $wRequest->fetchObject("User");
-		$wId = $wUser->getId();
 		if($wUser){
+			$wId = $wUser->getId();
 			$wUser->setRoles(RoleFactory::getRolesByUserId($aDb, $wId));
 			$wUser->setSpecialPermissions(SpecialPermissionFactory::getSpecialPermissionsByUserId($aDb, $wId));
 			return $wUser;

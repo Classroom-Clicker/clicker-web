@@ -33,6 +33,7 @@
 							echo '				<th style="width:10%">Correct</th>';
 							echo '				<th style="width:10%">Incorrect</th>';
 							echo '				<th>Result</th>';
+							echo '				<th style="width:10%"></th>';
 							echo '			</tr>';
 							echo '		</thead>';
 							echo '		<tbody>';
@@ -56,6 +57,7 @@
 								echo '					<div class="progress-bar progress-bar-danger" style="width: '.$wIncorrectPercentage.'%"></div>';
 								echo '				</div>';
 								echo '			</td>';
+								echo '			<td><a href="'.base_url().'results/question/'.$wResult['id'].'/'.$wI.'/">details</a></td>';
 								
 								echo '		</tr>';
 							}

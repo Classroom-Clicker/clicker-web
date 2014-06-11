@@ -21,8 +21,27 @@ class Users extends BaseController {
 		phpCAS::forceAuthentication();
 
 		$wUser = $this->userFactory->getUserByUsername($this->db, phpCAS::getUser());
-		$this->session->set_userdata('user', $wUser);
-		header("Location: ".base_url()."quizzes/");
+		if($wUser){
+			$this->session->set_userdata('user', $wUser);
+			header("Location: ".base_url());
+		}else{
+			$this->load->model('user', 'user');
+			$wUser = null;
+			$wUser = new $this->user;
+			$wUser->setUsername(phpCAS::getUser());
+			$wUser->setEmail('');
+			$wUser->setFirstname('');
+			$wUser->setLastName('');
+			$wUser->save($this->db);
+
+			$wRequest = $this->db->prepare("INSERT INTO UserRoles(user_id,role_id) VALUES(:user_id, 3)");
+			$wRequest->bindParam(":user_id", $wUser->getId(), PDO::PARAM_INT);
+			$wRequest->execute();			
+
+			$wUser = $this->userFactory->getUserByUsername($this->db, phpCAS::getUser());
+			$this->session->set_userdata('user', $wUser);
+			header("Location: ".base_url());
+		}
 	}
 
 	/**

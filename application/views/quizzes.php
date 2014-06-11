@@ -14,17 +14,17 @@
 					<input type="text" id="quizid" name="quizid" placeholder="Quiz ID"></input>
 					<button onclick="takeButton()" type="submit" class="btn btn-default">Take Quiz</button>
 				</div>
-				<?php if($sessions){ ?>
+				<?php if($sessionsNames){ ?>
 					<div class="row">
 						<h1>Sessions</h1>
 						<ul class="list-group" id="listSession">
-							<?php foreach($sessions as $session){ ?>
-								<a href="#" class="list-group-item"> <?php echo $session->getId(); ?></a>
+							<?php foreach($sessionsNames as $sessionName){ ?>
+								<a href="#" class="list-group-item"> <?php echo $sessionName; ?></a>
 							<?php } ?>
 						</ul>
 						<div class="btn-group btn-group-justified">
 							<div class="btn-group">
-								<button onclick="openSession()" type="submit" class="btn btn-default">Open session</button>
+								<button onclick="editSession()" type="submit" class="btn btn-default">Open session</button>
 							</div>
 						</div>
 						<script>
@@ -49,12 +49,6 @@
 								}
 								console.log(listSession[activePos].id);
 							});
-
-							function openSession() {
-								var redirect = 'quizzes/session/'
-								redirect = redirect + listSession[activePos].toString();
-								buttonHandler(redirect);
-							}
 						</script>
 					</div>
 				<?php } ?>
@@ -108,12 +102,29 @@
 								<button onclick="editButton()" type="submit" class="btn btn-default">Edit Quiz</button>
 							</div>
 							<div class="btn-group">
+								<button onclick="deleteButton()" type="submit" class="btn btn-default">Delete Quiz</button>
+							</div>
+							<div class="btn-group">
 								<button onclick="resultsButton()" type="submit" class="btn btn-default">View Results</button>
 							</div>
 						</div>
 
 						<!-- Redirects to start, edit, or view results for the selected quiz -->
 						<script>
+							// On click listener for take quiz button
+							function takeButton() {
+								var base = 'quizzes/question/'
+								var id = document.getElementById('quizid').value;
+								var redirect = base.concat(id);
+								redirect = redirect.concat('/1');
+								buttonHandler(redirect);
+							}
+
+							function editSession() {
+								var redirect = 'quizzes/session/'
+								redirect = redirect + listSession[activePos].toString();
+								buttonHandler(redirect);
+							}
 							// On click listener for new button
 							function newButton() {
 								var redirect = 'quizzes/edit/null'
@@ -141,11 +152,10 @@
 								buttonHandler(redirect);
 							}
 
-							// On click listener for take quiz button
-							function takeButton() {
-								var base = 'quizzes/take/'
-								var id = document.getElementById('quizid').value;
-								var redirect = base.concat(id);
+							// On click listener for view results button
+							function deleteButton() {
+								var base = 'quizzes/delete/'
+								var redirect = base.concat(quizIds[activePos].toString());
 								buttonHandler(redirect);
 							}
 
