@@ -272,21 +272,22 @@ class Quizzes extends BaseController {
 				redirect('/', 'refresh');
 			}
 
-			//create new UserQuestion
-			$wUserQuestion = new UserQuestion();
-			$wUserQuestion->setId(null);
-			$wUserQuestion->setQuizSessionId($aSessionId);
-			$wUserQuestion->setUserId($wCurrentUser->getId());
-			$wUserQuestion->setQuestionId($wQuestion->getId());
-			$wUserQuestion->save($this->db);
+			if(!$this->userquestion->isAnswered($this->db, $aSessionId, $aQuestionNumber, $wCurrentUser->getId())){
+				//create new UserQuestion
+				$wUserQuestion = new UserQuestion();
+				$wUserQuestion->setId(null);
+				$wUserQuestion->setQuizSessionId($aSessionId);
+				$wUserQuestion->setUserId($wCurrentUser->getId());
+				$wUserQuestion->setQuestionId($wQuestion->getId());
+				$wUserQuestion->save($this->db);
 			
-			//create new UserAnswer
-			$wUserAnswer = new UserAnswer();
-			$wUserAnswer->setId(null);
-			$wUserAnswer->setUserQuestionId($wUserQuestion->getId());
-			$wUserAnswer->setAnswerId($wAnswer->getId());
-			$wUserAnswer->save($this->db);
-
+				//create new UserAnswer
+				$wUserAnswer = new UserAnswer();
+				$wUserAnswer->setId(null);
+				$wUserAnswer->setUserQuestionId($wUserQuestion->getId());
+				$wUserAnswer->setAnswerId($wAnswer->getId());
+				$wUserAnswer->save($this->db);
+			}
 			//check if done and redirect
 			$wNextQuestion = $this->question->getQuestionByNumber($this->db, $aQuestionNumber+1, $wSession->getQuizId()); 
 			if($wNextQuestion){

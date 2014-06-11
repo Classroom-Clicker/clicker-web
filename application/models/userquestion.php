@@ -142,6 +142,20 @@ Class UserQuestion {
 		return $wUserQuestion;
 	}
 
+	public function isAnswered($aDb, $aSessionId, $aQuestionNumber, $aUserId){
+		$wRequest = $aDb->prepare("Select id FROM UserQuestions WHERE quizsession_id=:quizsession_id AND user_id=:user_id AND question_id=:question_id;");
+		$wRequest->bindParam(":quizsession_id", $aSessionId, PDO::PARAM_INT);
+		$wRequest->bindParam(":user_id", $aUserId, PDO::PARAM_INT);
+		$wRequest->bindParam(":question_id", $aQuestionNumber, PDO::PARAM_INT);
+		$wRequest->execute();
+		$wResponse = $wRequest->fetch();
+		if($wResponse['id']){
+			return true;		
+		}else{
+			return false;
+		}
+	}
+
 	/**
 	 * save
 	 * Saves or updates a UserQuestion in the database
