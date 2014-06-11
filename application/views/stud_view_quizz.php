@@ -8,7 +8,7 @@
 	<body>
 		<div id='all'>
 			<?php include "includes/header.php"; ?>
-			<div id='content' class='container'>
+			<div id='content' class='container center'>
 				<script>
 					redirect = "<?php echo base_url();?>" + "/quizzes/save/null/" + "<?php echo ($numAnswers+1).'/'.$quiz_id.'/' ?>";
 

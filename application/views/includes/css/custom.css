@@ -19,7 +19,21 @@ footer {
 }
 
 .btn-group-vertical > button{
-    margin-bottom:10px;
+	margin-bottom:10px;
 }
+
+.navbar-header {
+	float: left;
+}
+
+.navbar-form {
+	float: right;
+	padding: 0px;
+}
+
+.center {
+	text-align: center;
+}
+
 
 /* end CSS */

@@ -4,7 +4,7 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="<?php echo base_url(); ?>">Classroom clicker</a>
 			</div>
-			<div class="navbar-collapse collapse">
+			<div class="navbar-collapse">
 				<?php if(phpCas::isAuthenticated()){ ?>
 				<a href="<?php echo base_url()."users/logout"?>" class="navbar-form navbar-right" role="form">
 					<button type="submit" class="btn btn-danger">Sign out</button>
